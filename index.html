@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Dynamic Table</title>
+</head>
+<body>
+    <input type="text" id="input1" placeholder="Input 1">
+    <input type="text" id="input2" placeholder="Input 2">
+    <input type="text" id="input3" placeholder="Input 3">
+    <br>
+    <button onclick="addRow()">Add</button>
+    <button onclick="deleteRow()">Delete</button>
+    
+    <table id="myTable" border="1">
+        <thead>
+            <tr>
+                <th>Column 1</th>
+                <th>Column 2</th>
+                <th>Column 3</th>
+                <th>Edit</th>
+            </tr>
+        </thead>
+        <tbody>
+        </tbody>
+    </table>
+
+    <script>
+        let tableBody = document.getElementById("myTable").getElementsByTagName("tbody")[0];
+
+        function addRow() {
+            let input1 = document.getElementById("input1").value;
+            let input2 = document.getElementById("input2").value;
+            let input3 = document.getElementById("input3").value;
+
+            let row = tableBody.insertRow();
+            let cell1 = row.insertCell();
+            let cell2 = row.insertCell();
+            let cell3 = row.insertCell();
+            let editCell = row.insertCell();
+
+            cell1.innerHTML = input1;
+            cell2.innerHTML = input2;
+            cell3.innerHTML = input3;
+            editCell.innerHTML = '<button onclick="editRow(this)">Edit</button>';
+        }
+
+        function deleteRow() {
+            if (tableBody.rows.length > 0) {
+                tableBody.deleteRow(tableBody.rows.length - 1);
+            }
+        }
+
+        function editRow(button) {
+            let row = button.parentNode.parentNode;
+            let cells = row.cells;
+            
+            // Replace cells with input fields to allow editing
+            for (let i = 0; i < cells.length - 1; i++) {
+                let input = document.createElement("input");
+                input.type = "text";
+                input.value = cells[i].innerHTML;
+                cells[i].innerHTML = "";
+                cells[i].appendChild(input);
+            }
+
+            // Add a save button to the edit cell
+            let saveButton = document.createElement("button");
+            saveButton.textContent = "Save";
+            saveButton.onclick = function() {
+                for (let i = 0; i < cells.length - 1; i++) {
+                    cells[i].innerHTML = cells[i].firstChild.value;
+                }
+                // Replace save button with edit button
+                cells[cells.length - 1].innerHTML = '<button onclick="editRow(this)">Edit</button>';
+            }
+            cells[cells.length - 1].innerHTML = "";
+            cells[cells.length - 1].appendChild(saveButton);
+        }
+    </script>
+</body>
+</html>
